@@ -2,15 +2,15 @@ import React from 'react';
 import { useState } from 'react'
 
 function SearchBar() {
-  const [query, setQuery] = useState('')
-  const [result, setResult] = useState('')
+  const [query, setQuery] = useState('')    // state for what the user types then query holds the current value all under an empty string 
+  const [results, setResults] = useState<any[]>([])
 
 
-  const handleSearch = async () => {
-    const response = await fetch('http://127.0.0.1:8000/api/health/')
-    const data = await response.json()
-    setResult(data.status)
-  }
+  const handleSearch = async () => {  //runs when user presses enter with async added for wait confirmation from the API
+    const response = await fetch(`http://127.0.0.1:8000/api/search/?q=${query}`)  //calls the query into the URL and awaits a response back from the Django API
+    const data = await response.json()  //converts raw response data into JS object
+    setResults(data.results) //Displays outcome to users (result)
+}
   return (
     <div>
       <input
@@ -20,7 +20,12 @@ function SearchBar() {
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         placeholder='Search threats..'
       />
-      <p>{result}</p>
+      {results.map((item, index) => (
+          <div key={index}>
+              <p><strong>{item.title}</strong></p>
+              <small>{item.source}</small>
+          </div>
+      ))}
     </div>
   )
 }
