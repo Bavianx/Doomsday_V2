@@ -35,7 +35,7 @@ function ThreatFeed() {
     useEffect(() => {
           fetch('http://127.0.0.1:8000/api/health/')
               .then(res => res.json())
-              .then(data => setScore(data.status))  // hardcoded for now
+              .then(data => setScore(data.status))  // Variable identifier specifically for calling Django keys to access data
       }, [])
 
       return <p>Global Risk Score: {score}</p>
@@ -50,6 +50,35 @@ function ThreatScore({score}: { score: number }) {
   );
 }
 
+function ThreatDashboard() {              // Live Threat data scoring displaying the core concept of the project
+    const [data, setData] = useState<any>(null)
+
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/api/threats/')
+            .then(res => res.json())
+            .then(data => setData(data))    // Variable identifier specifically for calling Django keys to access data e.g. data.country
+    }, [])
+
+    if (!data) return <p>Loading...</p> //Stall 
+
+    return (         
+        <div> 
+            <h2>Global Risk Score: {data.global_score}</h2>       
+            <h3>Categories:</h3>
+            <p>Nuclear: {data.categories.nuclear}</p>
+            <p>Geopolitical: {data.categories.geopolitical}</p>
+            <p>Economic: {data.categories.economic}</p>
+            <p>Cyber: {data.categories.cyber}</p>
+            <h3>Latest Headlines:</h3>
+            {data.headlines.map((item: any, index: number) => (
+                <div key={index}>
+                    <p><strong>{item.title}</strong> — {item.score}</p>
+                </div>
+            ))}
+        </div>
+    )
+}
+
 function App() {
   return (
     <div className="App">
@@ -58,6 +87,7 @@ function App() {
       <ThreatScore score={5.87} />
       <SearchBar/>
       <ThreatFeed />
+      <ThreatDashboard />
     </div>
   );
 }
