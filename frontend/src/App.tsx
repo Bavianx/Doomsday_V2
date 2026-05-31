@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function SearchBar() {
   const [query, setQuery] = useState('')    // state for what the user types then query holds the current value all under an empty string 
@@ -30,6 +30,18 @@ function SearchBar() {
   )
 }
 
+function ThreatFeed() {
+    const [score, setScore] = useState('')
+    useEffect(() => {
+          fetch('http://127.0.0.1:8000/api/health/')
+              .then(res => res.json())
+              .then(data => setScore(data.status))  // hardcoded for now
+      }, [])
+
+      return <p>Global Risk Score: {score}</p>
+}
+
+
 function ThreatScore({score}: { score: number }) {
   return (
     <div>
@@ -44,13 +56,11 @@ function App() {
       <h1>Doomsday V2</h1>
       <p>Global Threat Intelligence Platform</p>
       <ThreatScore score={5.87} />
-      < SearchBar/>
+      <SearchBar/>
+      <ThreatFeed />
     </div>
   );
 }
-
-
-
 
 
 export default App;
