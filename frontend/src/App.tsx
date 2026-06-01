@@ -41,7 +41,6 @@ function ThreatFeed() {
       return <p>Global Risk Score: {score}</p>
 }
 
-
 function ThreatScore({score}: { score: number }) {
   return (
     <div>
@@ -50,29 +49,24 @@ function ThreatScore({score}: { score: number }) {
   );
 }
 
-function ThreatDashboard() {              // Live Threat data scoring displaying the core concept of the project
+function ThreatDashboard() {
     const [data, setData] = useState<any>(null)
 
     useEffect(() => {
         fetch('http://127.0.0.1:8000/api/threats/')
             .then(res => res.json())
-            .then(data => setData(data))    // Variable identifier specifically for calling Django keys to access data e.g. data.country
+            .then(data => setData(data))
     }, [])
 
-    if (!data) return <p>Loading...</p> //Stall 
+    if (!data) return <p>Loading...</p>
 
-    return (         
-        <div> 
-            <h2>Global Risk Score: {data.global_score}</h2>       
-            <h3>Categories:</h3>
-            <p>Nuclear: {data.categories.nuclear}</p>
-            <p>Geopolitical: {data.categories.geopolitical}</p>
-            <p>Economic: {data.categories.economic}</p>
-            <p>Cyber: {data.categories.cyber}</p>
+    return (
+        <div>
             <h3>Latest Headlines:</h3>
             {data.headlines.map((item: any, index: number) => (
                 <div key={index}>
-                    <p><strong>{item.title}</strong> — {item.score}</p>
+                    <p><strong>{item.headline}</strong></p>
+                    <small>{item.source} — {item.category} — {item.ai_score}</small>
                 </div>
             ))}
         </div>

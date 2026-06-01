@@ -3,6 +3,8 @@ from decouple import config
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .models import NewsItem, ThreatScore
+from .serializer import NewsItemSerializer, ThreatScoreSerializer
 
 
 @api_view(['GET'])
@@ -35,17 +37,9 @@ def search(request):
 
 @api_view(['GET'])
 def threat_data(request):
+    news_items = NewsItem.objects.all().order_by('-ai_score')[:10] #while react calls the /api/threats - this GET request runs, queries the db
+    serializer = NewsItemSerializer(news_items, many=True)  # And serializes the data to return the JSON response through the return request
+    
     return Response({
-        'global_score': 5.96,
-        'categories': {
-            'nuclear': 5.48,
-            'geopolitical': 6.74,
-            'economic': 5.04,
-            'cyber': 7.33
-        },
-        'headlines': [
-            {'title': 'Ransomware attack on critical infrastructure', 'category': 'cyber', 'score': 8.8},
-            {'title': 'NATO signals increased readiness', 'category': 'geopolitical', 'score': 6.6},
-            {'title': 'Missile test detected near disputed territory', 'category': 'nuclear', 'score': 7.9},    #Hardcoded content for testing purposes
-        ]
+        'headlines': serializer.data
     })
