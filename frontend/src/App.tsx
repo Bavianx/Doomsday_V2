@@ -50,12 +50,12 @@ function ThreatScore({score}: { score: number }) {
 }
 
 function ThreatDashboard() {
-    const [data, setData] = useState<any>(null)
+    const [data, setData] = useState<any>(null) // Stores the API response // default as null for first data sets until data is passed
 
-    useEffect(() => {
+    useEffect(() => {     //Runs this automatically on load of app
         fetch('http://127.0.0.1:8000/api/threats/')
             .then(res => res.json())
-            .then(data => setData(data))
+            .then(data => setData(data))      //Stores the JSON in state
     }, [])
 
     if (!data) return <p>Loading...</p>
