@@ -1,0 +1,33 @@
+import React from 'react';
+import { useState, useEffect } from 'react'
+
+function SearchBar() {
+  const [query, setQuery] = useState('')    // state for what the user types then query holds the current value all under an empty string 
+  const [results, setResults] = useState<any[]>([])
+
+
+  const handleSearch = async () => {  //runs when user presses enter with async added for wait confirmation from the API
+    const response = await fetch(`http://127.0.0.1:8000/api/search/?q=${query}`)  //calls the query into the URL and awaits a response back from the Django API
+    const data = await response.json()  //converts raw response data into JS object
+    setResults(data.results) //Displays outcome to users (result)
+}
+  return (
+    <div>
+      <input
+        type="text"
+        value={query} // Current state of the input
+        onChange={(e) => setQuery(e.target.value)}  // updates the request state on each keystroke //
+        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+        placeholder='Search threats..'
+      />
+      {results.map((item, index) => (
+          <div key={index}>
+              <p><strong>{item.title}</strong></p>
+              <small>{item.source}</small>
+          </div>
+      ))}
+    </div>
+  )
+}
+
+export default SearchBar;
