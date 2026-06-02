@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
 
-interface ThreatDashboardProps {
+interface ThreatDashboardProps {        // TS Blueprint for components requiring a string query
     query: string
 }
 
-function ThreatDashboard({ query }: ThreatDashboardProps) {
+function ThreatDashboard({ query }: ThreatDashboardProps) { 
     const [data, setData] = useState<any>(null)
 
     useEffect(() => {
