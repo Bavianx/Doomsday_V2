@@ -1,24 +1,34 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
 
-function ThreatDashboard() {
-    const [data, setData] = useState<any>(null) // Stores the API response // default as null for first data sets until data is passed
+interface ThreatDashboardProps {
+    query: string
+}
 
-    useEffect(() => {     //Runs this automatically on load of app
-        fetch('http://127.0.0.1:8000/api/threats/')
+function ThreatDashboard({ query }: ThreatDashboardProps) {
+    const [data, setData] = useState<any>(null)
+
+    useEffect(() => {
+        const url = query 
+            ? `http://127.0.0.1:8000/api/search/?q=${query}`
+            : `http://127.0.0.1:8000/api/threats/`
+        
+        fetch(url)
             .then(res => res.json())
-            .then(data => setData(data))      //Stores the JSON in state
-    }, [])
+            .then(data => {
+                setData(query ? data.results : data.headlines)
+            })
+    }, [query])
 
-    if (!data) return <p>Loading...</p>
+    if (!data) return <p className="text-gray-400">Loading...</p>
 
     return (
         <div className="space-y-3">
             <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase">
-                Live Threat Intelligence
+                {query ? `Results: ${query}` : 'Live Threat Intelligence'}
             </h3>
             <div className="bg-gray-900 rounded-xl border border-gray-800 divide-y divide-gray-800">
-                {data.headlines.map((item: any, index: number) => (
+                {data.map((item: any, index: number) => (
                     <div key={index} className="flex items-start justify-between p-4 hover:bg-gray-800 transition-colors">
                         <div className="flex items-start gap-3">
                             <span className={`text-xs px-2 py-1 rounded font-medium flex-shrink-0 ${
@@ -27,10 +37,10 @@ function ThreatDashboard() {
                                 item.category === 'geopolitical' ? 'bg-yellow-900 text-yellow-300' :
                                 'bg-blue-900 text-blue-300'
                             }`}>
-                                {item.category.toUpperCase()}
+                                {item.category ? item.category.toUpperCase() : 'NEWS'}
                             </span>
                             <div>
-                                <p className="text-sm text-gray-200">{item.headline}</p>
+                                <p className="text-sm text-gray-200">{item.headline || item.title}</p>
                                 <p className="text-xs text-gray-500 mt-1">{item.source}</p>
                             </div>
                         </div>
