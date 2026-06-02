@@ -9,15 +9,15 @@ function ThreatDashboard({ query }: ThreatDashboardProps) {
     const [data, setData] = useState<any>(null)
 
     useEffect(() => {
-        const url = query 
-            ? `http://127.0.0.1:8000/api/search/?q=${query}`
-            : `http://127.0.0.1:8000/api/threats/`
+        const url = query
+            ? `http://127.0.0.1:8000/api/search/?q=${query}` // if true opens page
+            : `http://127.0.0.1:8000/api/threats/`  // if false returns to threats page
         
-        fetch(url)
-            .then(res => res.json())
+        fetch(url)  // calls Rest API given the URL chosen 
+            .then(res => res.json())    //response -> JSON
             .then(data => {
-                setData(query ? data.results : data.headlines)
-            })
+                setData(query ? data.results : data.headlines) // two API's return two keys for the search (query),(data.results) and threats (default),(data.headlines)
+            }) 
     }, [query])
 
     if (!data) return <p className="text-gray-400">Loading...</p>
@@ -28,7 +28,7 @@ function ThreatDashboard({ query }: ThreatDashboardProps) {
                 {query ? `Results: ${query}` : 'Live Threat Intelligence'}
             </h3>
             <div className="bg-gray-900 rounded-xl border border-gray-800 divide-y divide-gray-800">
-                {data.map((item: any, index: number) => (
+                {data.map((item: any, index: number) => ( // loops through each headline within the data array to display the sub data 
                     <div key={index} className="flex items-start justify-between p-4 hover:bg-gray-800 transition-colors">
                         <div className="flex items-start gap-3">
                             <span className={`text-xs px-2 py-1 rounded font-medium flex-shrink-0 ${
