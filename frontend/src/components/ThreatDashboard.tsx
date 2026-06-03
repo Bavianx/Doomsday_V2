@@ -6,9 +6,9 @@ interface ThreatDashboardProps {        // TS Blueprint for components requiring
 }
 
 function ThreatDashboard({ query }: ThreatDashboardProps) { 
-    const [data, setData] = useState<any>(null)
+    const [data, setData] = useState<any>(null) //Data container for changes (stores data)
 
-    useEffect(() => {
+    useEffect(() => { //triggers the change (acts on data)
         const url = query
             ? `http://127.0.0.1:8000/api/search/?q=${query}` // if true opens page
             : `http://127.0.0.1:8000/api/threats/`  // if false returns to threats page

@@ -1,27 +1,67 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import GlobeComponent from './components/Globe'
 import SearchBar from './components/SearchBar'
 import ThreatDashboard from './components/ThreatDashboard'
 
-
-
 function App() {
- const [searchQuery, setSearchQuery] = useState('') // searchbar communicates query to app -> app passes this to threatdashboard -> threatdashboard returns the data based on search 
+    const [view, setView] = useState<'globe' | 'dashboard'>('globe')
+    const [searchQuery, setSearchQuery] = useState('')
+
+    const scrollAccumulator = React.useRef(0);
+
+    const handleScroll = (e: WheelEvent) => {
+        scrollAccumulator.current += e.deltaY;
+
+        if (scrollAccumulator.current > 300 && view === 'globe') {
+            setView('dashboard');
+        }
+
+        if (scrollAccumulator.current < 300 && view === 'dashboard') {
+            setView('globe');
+        }
+    };
+
+    React.useEffect(() => {
+        window.addEventListener('wheel', handleScroll)
+        return () => window.removeEventListener('wheel', handleScroll)
+    }, [view])
 
     return (
-        <div className="min-h-screen bg-gray-950 text-white">
-            <nav className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-                <h1 className="text-xl font-bold text-red-500 tracking-widest"> DOOMSDAY</h1>
+        <div className="relative w-screen h-screen overflow-hidden bg-gray-950">
+
+            {/* Globe layer — always rendered, fades based on view */}
+            <div className={`absolute inset-0 transition-opacity duration-700 ${
+                view === 'globe' ? 'opacity-100' : 'opacity-30'
+            }`}>
+                <GlobeComponent />
+            </div>
+
+            {/* Minimal navbar — always visible */}
+            <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4">
+                <h1 className="text-xl font-bold text-red-500 tracking-widest">☢ DOOMSDAY</h1>
                 <SearchBar onSearch={setSearchQuery} />
-                <span className="text-sm text-gray-500">V2</span>
-            </nav>
-            <main className="px-6 py-6">
-                <ThreatDashboard query={searchQuery} />  
-            </main>
+            </div>
+
+            {/* Dashboard layer — slides up on scroll down */}
+            <div className={`absolute inset-0 z-20 transition-all duration-700 ${
+                view === 'dashboard' 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-full pointer-events-none'
+            }`}>
+                <div className="h-full overflow-y-auto bg-gray-950/90 backdrop-blur-sm pt-20 px-6">
+                    <ThreatDashboard query={searchQuery} />
+                </div>
+            </div>
+
+            {/* Scroll hint */}
+            {view === 'globe' && (
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-gray-500 text-xs animate-bounce">
+                    scroll down for dashboard
+                </div>
+            )}
+
         </div>
     )
-  
 }
 
-
-export default App;
+export default App
