@@ -23,15 +23,15 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
         import('globe.gl').then(({ default: Globe }) => {
             const globe = new Globe(globeRef.current!)
                 .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-                .width(window.innerWidth)
-                .height(window.innerHeight)
+                .width(globeRef.current!.clientWidth)
+                .height(globeRef.current!.clientHeight)
                 .pointsData(threatPoints)
                 .ringsData(threatPoints)
                 .ringLat('lat')
                 .ringLng('lng')
                 .ringColor((d: any) => d.score >= 8 ? '#ef4444' : '#f97316')
                 .ringMaxRadius((d: any) => d.score / 2)
-                .ringPropagationSpeed(.75)
+                .ringPropagationSpeed(.5)
                 .ringRepeatPeriod(1850)
                 .pointLat('lat')
                 .pointLng('lng')
@@ -50,7 +50,7 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
         })
     }, []);
 
-    return <div ref={globeRef} />;
+    return <div ref={globeRef} style={{ width: '100%', height: '100%' }} />
 }
 
 export default GlobeComponent;

@@ -3,9 +3,11 @@ import GlobeComponent from './components/Globe'
 import SearchBar from './components/SearchBar'
 import ThreatDashboard from './components/ThreatDashboard'
 
+
 function App() {
     const [view, setView] = useState<'globe' | 'dashboard'>('globe')
     const [searchQuery, setSearchQuery] = useState('')
+    const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
 
     const scrollAccumulator = React.useRef(0);
 
@@ -33,7 +35,10 @@ function App() {
             <div className={`absolute inset-0 transition-opacity duration-700 ${
                 view === 'globe' ? 'opacity-100' : 'opacity-30'
             }`}>
-                <GlobeComponent />
+                <GlobeComponent onCountryClick={(country) => { 
+                    setSelectedCountry(country)
+                    setView('dashboard')
+                }} />
             </div>
 
             {/* Minimal navbar — always visible */}
@@ -49,6 +54,25 @@ function App() {
                     : 'opacity-0 translate-y-full pointer-events-none'
             }`}>
                 <div className="h-full overflow-y-auto bg-gray-950/90 backdrop-blur-sm pt-20 px-6">
+                    {/* Country overlay upon click — only shows when country selected */}
+                    {selectedCountry && (
+                        <div className="mb-6 bg-gray-900 border border-red-900 rounded-xl p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <h2 className="text-lg font-bold text-red-400">
+                                    {selectedCountry}
+                                </h2>
+                                <button 
+                                    onClick={() => setSelectedCountry(null)}
+                                    className="text-gray-500 hover:text-white text-sm"
+                                >
+                                    ✕ clear
+                                </button>
+                            </div>
+                            <p className="text-sm text-gray-400">
+                                Showing threat intelligence for {selectedCountry}
+                            </p>
+                        </div>
+                    )}
                     <ThreatDashboard query={searchQuery} />
                 </div>
             </div>
