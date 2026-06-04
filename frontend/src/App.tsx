@@ -38,7 +38,7 @@ function App() {
 
             {/* Minimal navbar — always visible */}
             <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4">
-                <h1 className="text-xl font-bold text-red-500 tracking-widest">☢ DOOMSDAY</h1>
+                <h1 className="text-xl font-bold text-red-500 tracking-widest"> DOOMSDAY</h1>
                 <SearchBar onSearch={setSearchQuery} />
             </div>
 
