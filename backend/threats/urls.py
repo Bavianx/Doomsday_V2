@@ -6,4 +6,5 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('threats/', views.threat_data, name='threat_data'),
     path('fetch/', views.fetch_news_view, name='fetch_news'),
+    path('country/',views.country_threats, name='country_threats')
 ]

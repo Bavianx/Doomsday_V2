@@ -73,7 +73,7 @@ function App() {
                             </p>
                         </div>
                     )}
-                    <ThreatDashboard query={searchQuery} />
+                    <ThreatDashboard query={searchQuery} selectedCountry={selectedCountry} />
                 </div>
             </div>
 

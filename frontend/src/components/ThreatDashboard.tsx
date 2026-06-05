@@ -3,22 +3,27 @@ import { useState, useEffect } from 'react'
 
 interface ThreatDashboardProps {        // TS Blueprint for components requiring a string query
     query: string
+    selectedCountry?: string | null
 }
 
-function ThreatDashboard({ query }: ThreatDashboardProps) { 
-    const [data, setData] = useState<any>(null) //Data container for changes (stores data)
+function ThreatDashboard({ query, selectedCountry }: ThreatDashboardProps) {
+    const [data, setData] = useState<any>(null)
 
-    useEffect(() => { //triggers the change (acts on data)
-        const url = query
-            ? `http://127.0.0.1:8000/api/search/?q=${query}` // if true opens page
-            : `http://127.0.0.1:8000/api/threats/`  // if false returns to threats page
+    useEffect(() => {
+        let url = `http://127.0.0.1:8000/api/threats/`  // default page
+
+        if (selectedCountry) {
+            url = `http://127.0.0.1:8000/api/country/?country=${selectedCountry}` // selected country page
+        } else if (query) {
+            url = `http://127.0.0.1:8000/api/search/?q=${query}` //query search
+        }
         
         fetch(url)  // calls Rest API given the URL chosen 
             .then(res => res.json())    //response -> JSON
             .then(data => {
                 setData(query ? data.results : data.headlines) // two API's return two keys for the search (query),(data.results) and threats (default),(data.headlines)
             }) 
-    }, [query])
+    }, [query, selectedCountry])  //runs query for selected country  (specified data sets)
 
     if (!data) return <p className="text-gray-400">Loading...</p>
 

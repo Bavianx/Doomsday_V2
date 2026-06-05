@@ -38,6 +38,29 @@ def search(request):
     return Response({'query': query, 'results': results})
 
 @api_view(['GET'])
+def country_threats(request):
+    country = request.GET.get('country', '')
+
+    if not country:
+        return Response({'headlines': []})
+    
+    api_key = config('NEWS_API_KEY')
+    response = requests.get(
+        f'https://newsapi.org/v2/everything?q={country}+threat+conflict&language=en&pageSize=10&sortBy=publishedAt&apiKey={api_key}'
+    )
+    articles = response.json().get('articles', [])
+
+    results = [
+        {
+            'title': article.get('title', ''),
+            'source': article.get('source', {}).get('name', ''),
+            'url': article.get('url', '')
+        }
+        for article in articles
+    ]   
+    return Response({'country': country, 'headlines': results})
+
+@api_view(['GET'])
 def threat_data(request):
     latest = NewsItem.objects.order_by('-created_at').first()
     if not latest or (timezone.now() - latest.created_at) > timedelta(hours=3):#Part time fix for later implementation of websockets for data 
