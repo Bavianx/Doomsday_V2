@@ -27,17 +27,16 @@ Deployment in progress — AWS target
 - Category Colour Coding — Nuclear, geopolitical, economic, and cyber headlines colour coded with dynamic score colours (red/yellow/green)
 
 Architecture
-┌─────────────────────────────┐         ┌──────────────────────────────┐
-│     React + TypeScript      │  ←────→ │     Django REST API          │
-│     Frontend                │  JSON   │     Backend                  │
-│                             │         │                              │
-│  Globe.gl — 3D world map    │         │  PostgreSQL database         │
-│  ThreatDashboard component  │         │  NewsAPI integration         │
-│  RiskScore component        │         │  Anthropic Claude API        │
-│  SearchBar component        │         │  AI scoring pipeline         │
-│  Scroll transition logic    │         │  Auto-refresh logic          │
-│  Country click handler      │         │  Weighted risk calculator    │
-└─────────────────────────────┘         └──────────────────────────────┘
+**Frontend** (React + TypeScript) communicates with **Backend** (Django REST API) via JSON over HTTP.
+
+| Frontend | | Backend |
+|---|---|---|
+| Globe.gl — 3D world map | ←→ JSON | PostgreSQL database |
+| ThreatDashboard component | | NewsAPI integration |
+| RiskScore component | | Anthropic Claude API |
+| SearchBar component | | AI scoring pipeline |
+| Scroll transition logic | | Auto-refresh logic |
+| Country click handler | | Weighted risk calculator |
 
 ## V2 Roadmap
 
