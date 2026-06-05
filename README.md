@@ -4,7 +4,7 @@ V2 is a complete rebuild of Doomsday V1 — moving from a monolithic Django temp
 
 ## Live Demo
 
-Deployment in progress — AWS target
+Deployment in progress will project is underway — end goal target is AWS
 
 ## Features
 
@@ -22,7 +22,7 @@ Deployment in progress — AWS target
   
 - Live Search — Search any threat topic or country, dashboard updates instantly
   
-- Auto Refresh — Backend automatically re-fetches news if data is older than 6 hours
+- Auto Refresh — Backend automatically re-fetches news if data is older than 3 hours
   
 - Category Colour Coding — Nuclear, geopolitical, economic, and cyber headlines colour coded with dynamic score colours (red/yellow/green)
 
