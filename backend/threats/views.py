@@ -8,6 +8,9 @@ from .serializer import NewsItemSerializer, ThreatScoreSerializer
 from .news_fetcher import fetch_news
 from datetime import timedelta #Part time fix for later implementation of websockets for data 
 from django.utils import timezone #Part time fix for later implementation of websockets for data 
+from django.db.models import Avg
+from .AI_Scorer import score_news_items
+
 
 @api_view(['GET'])
 def health_check(request):
@@ -59,6 +62,34 @@ def country_threats(request):
         for article in articles
     ]   
     return Response({'country': country, 'headlines': results})
+
+
+@api_view(['GET'])
+def score_news_view(request):
+    score_news_items()
+    return Response({'status': 'News scored successfully'})
+
+@api_view(['GET'])
+def global_risk_score(request):
+    
+    nuclear = NewsItem.objects.filter(category='nuclear').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
+    geopolitical = NewsItem.objects.filter(category='geopolitical').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
+    economic = NewsItem.objects.filter(category='economic').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
+    cyber = NewsItem.objects.filter(category='cyber').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
+    
+    global_score = round(
+        (nuclear * 0.35) + (geopolitical * 0.25) + (economic * 0.25) + (cyber * 0.15), 2
+    )
+    
+    return Response({       #Test data
+        'global_score': global_score,
+        'categories': {
+            'nuclear': round(nuclear, 2),
+            'geopolitical': round(geopolitical, 2),
+            'economic': round(economic, 2),
+            'cyber': round(cyber, 2)
+        }
+    })
 
 @api_view(['GET'])
 def threat_data(request):

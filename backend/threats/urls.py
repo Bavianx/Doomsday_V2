@@ -6,5 +6,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('threats/', views.threat_data, name='threat_data'),
     path('fetch/', views.fetch_news_view, name='fetch_news'),
-    path('country/',views.country_threats, name='country_threats')
+    path('country/',views.country_threats, name='country_threats'),
+    path('risk/', views.global_risk_score, name='global_risk_score'),
+    path('score/', views.score_news_view, name='score_news'),
 ]

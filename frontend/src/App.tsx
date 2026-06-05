@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import GlobeComponent from './components/Globe'
 import SearchBar from './components/SearchBar'
 import ThreatDashboard from './components/ThreatDashboard'
+import RiskScore from './components/RiskScore'
 
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
                             </p>
                         </div>
                     )}
+                    <RiskScore />
                     <ThreatDashboard query={searchQuery} selectedCountry={selectedCountry} />
                 </div>
             </div>
