@@ -26,7 +26,8 @@ Deployment in progress — AWS target
   
 - Category Colour Coding — Nuclear, geopolitical, economic, and cyber headlines colour coded with dynamic score colours (red/yellow/green)
 
-Architecture
+## Architecture
+
 **Frontend** (React + TypeScript) communicates with **Backend** (Django REST API) via JSON over HTTP.
 
 | Frontend | | Backend |
