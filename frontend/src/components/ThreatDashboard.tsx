@@ -32,7 +32,7 @@ function ThreatDashboard({ query, selectedCountry }: ThreatDashboardProps) {
             <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase">
                 {query ? `Results: ${query}` : 'Live Threat Intelligence'}
             </h3>
-            <div className="bg-gray-900 rounded-xl border border-gray-800 divide-y divide-gray-800">
+            <div style={{ maxHeight: '600px' }} className="bg-gray-900 rounded-xl border border-gray-800 divide-y divide-gray-800 overflow-y-auto">
                 {data.map((item: any, index: number) => ( // loops through each headline within the data array to display the sub data 
                     <div key={index} className="flex items-start justify-between p-4 hover:bg-gray-800 transition-colors">
                         <div className="flex items-start gap-3">

@@ -9,4 +9,5 @@ urlpatterns = [
     path('country/',views.country_threats, name='country_threats'),
     path('risk/', views.global_risk_score, name='global_risk_score'),
     path('score/', views.score_news_view, name='score_news'),
+    path('stocknews/', views.stock_news, name='stock_news'),
 ]

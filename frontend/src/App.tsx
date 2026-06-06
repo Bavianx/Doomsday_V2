@@ -3,13 +3,21 @@ import GlobeComponent from './components/Globe'
 import SearchBar from './components/SearchBar'
 import ThreatDashboard from './components/ThreatDashboard'
 import RiskScore from './components/RiskScore'
+import StockNews from './StockNews'
 
 
 function App() {
     const [view, setView] = useState<'globe' | 'dashboard'>('globe')
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+    const [riskData, setRiskData] = useState<any>(null)
 
+    React.useEffect(() => {
+            fetch('http://127.0.0.1:8000/api/risk/')
+                .then(res => res.json())
+                .then(data => setRiskData(data))
+    }, [])
+    
     const scrollAccumulator = React.useRef(0);
 
     const handleScroll = (e: WheelEvent) => {
@@ -55,30 +63,82 @@ function App() {
                     : 'opacity-0 translate-y-full pointer-events-none'
             }`}>
                 <div className="h-full overflow-y-auto bg-gray-950/90 backdrop-blur-sm pt-20 px-6">
-                    {/* Country overlay upon click — only shows when country selected */}
-                    {selectedCountry && (
-                        <div className="mb-6 bg-gray-900 border border-red-900 rounded-xl p-4">
-                            <div className="flex items-center justify-between mb-3">
-                                <h2 className="text-lg font-bold text-red-400">
-                                    {selectedCountry}
-                                </h2>
-                                <button 
-                                    onClick={() => setSelectedCountry(null)}
-                                    className="text-gray-500 hover:text-white text-sm"
-                                >
-                                    ✕ clear
-                                </button>
-                            </div>
-                            <p className="text-sm text-gray-400">
-                                Showing threat intelligence for {selectedCountry}
-                            </p>
+                    {/* Coordinates bar */}
+                    <div className="mb-4 py-2 px-4 bg-gray-900 border border-gray-800 rounded-lg flex items-center gap-6">
+                        <span className="text-xs text-gray-500 uppercase tracking-widest">Location</span>
+                        <span className="text-sm text-gray-300">
+                            LAT: {selectedCountry ? '—' : '0.00'}   {/*Will implement true to nature geolocation for selected area*/}
+                            &nbsp;LNG: {selectedCountry ? '—' : '0.00'}
+                        </span>
+                        <span className="text-sm text-red-400 font-medium">
+                            {selectedCountry || 'Global View'}
+                        </span>
+                    </div>
+                    {/* Three column layout */}
+                    <div className="grid grid-cols-3 gap-4">
+                        
+                        {/* Left — Live Threat Feed */}
+                        <div className="flex flex-col gap-4">
+                            <ThreatDashboard query={searchQuery} selectedCountry={selectedCountry} />
                         </div>
-                    )}
-                    <RiskScore />
-                    <ThreatDashboard query={searchQuery} selectedCountry={selectedCountry} />
+
+                        {/* Middle — Stock News + Global Risk Score */}
+                        <div className="flex flex-col gap-4">
+                            <StockNews />
+                            <RiskScore />
+                        </div>
+
+                        {/* Right — AI Assessment + Threat Scores */}
+                        <div className="flex flex-col gap-4">
+                            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                                <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3">
+                                    AI Assessment
+                                </h3>
+                                <p className="text-sm text-gray-400">
+                                    Claude API integration pending credits.
+                                </p>
+                            </div>
+                            {/* Threat Scores */}
+                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                                    <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3">
+                                        Threat Scores
+                                    </h3>
+                                    <div className="flex flex-col gap-3">
+                                        {/* Nuclear — DEFCON Rating score */}
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Nuclear</span>
+                                            <span className="text-sm font-bold text-red-400">
+                                                DEFCON {riskData ? Math.ceil((10 - riskData.categories.nuclear) / 2) : '—'}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Geopolitical</span>
+                                            <span className={`text-sm font-bold ${riskData?.categories.geopolitical >= 7 ? 'text-red-400' : riskData?.categories.geopolitical >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                                {riskData?.categories.geopolitical ?? '—'}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Economic</span>
+                                            <span className={`text-sm font-bold ${riskData?.categories.economic >= 7 ? 'text-red-400' : riskData?.categories.economic >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                                {riskData?.categories.economic ?? '—'}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Cyber</span>
+                                            <span className={`text-sm font-bold ${riskData?.categories.cyber >= 7 ? 'text-red-400' : riskData?.categories.cyber >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                                {riskData?.categories.cyber ?? '—'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-
             {/* Scroll hint */}
             {view === 'globe' && (
                 <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-gray-500 text-xs animate-bounce">

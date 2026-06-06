@@ -11,7 +11,6 @@ from django.utils import timezone #Part time fix for later implementation of web
 from django.db.models import Avg
 from .AI_Scorer import score_news_items
 
-
 @api_view(['GET'])
 def health_check(request):
     return Response({'status': 'Doomsday V2 API is running'})
@@ -72,7 +71,7 @@ def score_news_view(request):
 @api_view(['GET'])
 def global_risk_score(request):
     
-    nuclear = NewsItem.objects.filter(category='nuclear').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
+    nuclear = NewsItem.objects.filter(category='nuclear').aggregate(Avg('ai_score'))['ai_score__avg'] or 0      #ensures the data has a score rated from the ai or 0
     geopolitical = NewsItem.objects.filter(category='geopolitical').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
     economic = NewsItem.objects.filter(category='economic').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
     cyber = NewsItem.objects.filter(category='cyber').aggregate(Avg('ai_score'))['ai_score__avg'] or 0
@@ -90,6 +89,25 @@ def global_risk_score(request):
             'cyber': round(cyber, 2)
         }
     })
+
+
+@api_view(['GET'])
+def stock_news(request):
+    api_key = config('NEWS_API_KEY')
+    response = requests.get(
+        f'https://newsapi.org/v2/everything?q=stocks+markets+economy+finance&language=en&pageSize=10&sortBy=publishedAt&apiKey={api_key}'
+    )
+    articles = response.json().get('articles', [])
+    
+    results = [
+        {
+            'title': article.get('title', ''),
+            'source': article.get('source', {}).get('name', ''),
+        }
+        for article in articles
+    ]
+    
+    return Response({'articles': results})
 
 @api_view(['GET'])
 def threat_data(request):

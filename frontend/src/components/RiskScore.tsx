@@ -26,18 +26,7 @@ function RiskScore() {
                 </span>
                 <span className="text-gray-500 text-lg">/ 10</span>
             </div>
-            <div className="grid grid-cols-4 gap-3">
-                {Object.entries(risk.categories).map(([category, score]: [string, any]) => ( //mapping the categories of risks to scores within the new columns
-                    <div key={category} className="bg-gray-800 rounded-lg p-3 text-center">
-                        <div className="text-xs text-gray-400 uppercase mb-1">{category}</div>
-                        <div className={`text-lg font-bold ${ //risk weight identifiers
-                            score >= 7 ? 'text-red-400' :
-                            score >= 4 ? 'text-yellow-400' :
-                            'text-green-400'
-                        }`}>{score}</div>
-                    </div>
-                ))}
-            </div>
+
         </div>
     )
 }
