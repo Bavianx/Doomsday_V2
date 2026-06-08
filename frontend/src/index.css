@@ -5,3 +5,22 @@
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #ef4444; border-radius: 99px; }
+
+@keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+.auto-scroll {
+    animation: scrollUp 40s linear infinite;
+}
+
+.auto-scroll:hover {
+    animation-play-state: paused;
+}
+
+
+@keyframes polygonPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}

@@ -3,10 +3,10 @@ from decouple import config
 from .models import NewsItem
 
 THREAT_CATEGORIES = {
-    "nuclear": "nuclear weapons OR nuclear threat OR missile",
-    "geopolitical": "war OR conflict OR NATO OR military",
-    "economic": "recession OR inflation OR market crash OR economic crisis",
-    "cyber": "cyberattack OR data breach OR hacking OR ransomware"
+    "nuclear": "nuclear weapons OR nuclear missile OR nuclear threat OR radiation leak",
+    "geopolitical": "military conflict OR war OR NATO OR sanctions OR geopolitical crisis",
+    "economic": "economic crisis OR market crash OR recession OR inflation crisis OR financial collapse",
+    "cyber": "cyberattack OR ransomware OR data breach OR hacking OR cyber warfare"
 }
 
 def fetch_news():
@@ -14,7 +14,7 @@ def fetch_news():
     
     for category, query in THREAT_CATEGORIES.items():
         response = requests.get(
-            f'https://newsapi.org/v2/everything?q={query}&language=en&pageSize=5&sortBy=publishedAt&apiKey={api_key}'
+            f'https://newsapi.org/v2/everything?q=stock+market+trading+financial+news&language=en&pageSize=10&sortBy=publishedAt&apiKey={api_key}'
         )
         articles = response.json().get('articles', [])
         

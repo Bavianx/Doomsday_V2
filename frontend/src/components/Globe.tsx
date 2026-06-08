@@ -20,33 +20,62 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
     useEffect(() => {
         if (!globeRef.current) return
 
+        const threatMap: { [key: string]: number } = {
+            'Russia': 9.1,
+            'China': 7.8,
+            'United States of America': 5.5,
+            'Pakistan': 8.2,
+            'Iran': 8.9,
+            'North Korea': 9.4,
+            'Japan': 4.2,
+        }
+
         import('globe.gl').then(({ default: Globe }) => {
             const globe = new Globe(globeRef.current!)
                 .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
                 .width(globeRef.current!.clientWidth)
                 .height(globeRef.current!.clientHeight)
-                .pointsData(threatPoints)
-                .ringsData(threatPoints)
-                .ringLat('lat')
-                .ringLng('lng')
-                .ringColor((d: any) => d.score >= 8 ? '#ef4444' : '#f97316')
-                .ringMaxRadius((d: any) => d.score / 2)
-                .ringPropagationSpeed(.5)
-                .ringRepeatPeriod(1850)
-                .pointLat('lat')
-                .pointLng('lng')
-                .pointColor((d: any) => d.score >= 8 ? '#ef4444' : d.score >= 6 ? '#f97316' : '#eab308')
-                .pointAltitude((d: any) => d.score / 50)
-                .pointRadius(0.5)
-                .pointLabel((d: any) => `${d.country}: ${d.score}`)
-                .onPointClick((d: any) => {
-                    if (onCountryClick) onCountryClick(d.country)
-                })
 
-            const controls = globe.controls()
-            controls.minDistance = 120
-            controls.maxDistance = 300
-            controls.enablePan = false
+        
+        fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+            .then(res => res.json())
+            .then(countries => {
+                globe
+                    .polygonsData(countries.features)
+                    .polygonAltitude(0.01)
+                    .polygonCapColor((d: any) => {
+                        const name = d.properties.name
+                        const score = threatMap[name]
+                        if (!score) return 'rgba(255,255,255,0.02)'
+                        return score >= 8 ? 'rgba(239,68,68,0.6)' :
+                            score >= 6 ? 'rgba(249,115,22,0.4)' :
+                            'rgba(234,179,8,0.3)'
+                    })
+                    .polygonStrokeColor(() => 'rgba(255,255,255,0.03)')
+                    .onPolygonClick((d: any) => {
+                        const name = d.properties.name
+                        if (onCountryClick) onCountryClick(name)
+                    })
+                let frame = 0
+
+                setInterval(() => {
+                    frame += 0.07  // speed of wave
+
+                    globe.polygonCapColor((d: any) => {
+                        const name = d.properties.name
+                        const score = threatMap[name]
+                        if (!score) return 'rgba(255,255,255,0.01)'
+                        
+                        // each country gets a slightly offset wave based on its score
+                        const wave = (Math.sin(frame + score) + 1) / 2  // 0 to 1
+                        const alpha = 0.15 + wave * 0.6
+                        
+                        return score >= 8 ? `rgba(239,68,68,${alpha})` :
+                            score >= 6 ? `rgba(249,115,22,${alpha})` :
+                            `rgba(234,179,8,${alpha})`
+                    })
+                }, 50)
+            })
         })
     }, []);
 

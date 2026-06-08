@@ -63,15 +63,23 @@ function App() {
                     : 'opacity-0 translate-y-full pointer-events-none'
             }`}>
                 <div className="h-full overflow-y-auto bg-gray-950/90 backdrop-blur-sm pt-20 px-6">
+                    {/* Minimal navbar — always visible */}
+                    <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4">
+                        <h1 className="text-xl font-bold text-red-500 tracking-widest"> DOOMSDAY</h1>
+                        <div className="absolute left-1/3 -translate-x-1/2">
+                            <SearchBar onSearch={setSearchQuery} />
+                        </div>
+                    </div>
+
                     {/* Coordinates bar */}
-                    <div className="mb-4 py-2 px-4 bg-gray-900 border border-gray-800 rounded-lg flex items-center gap-6">
-                        <span className="text-xs text-gray-500 uppercase tracking-widest">Location</span>
+                    <div className="mb-4 py-2 px-4 rounded-lg flex items-center gap-6">
+                        <span className="text-xs text-gray-500 uppercase tracking-widest">Location | </span>
                         <span className="text-sm text-gray-300">
-                            LAT: {selectedCountry ? '—' : '0.00'}   {/*Will implement true to nature geolocation for selected area*/}
+                            LAT: {selectedCountry ? '—' : '0.00 ,'}   {/*Will implement true to nature geolocation for selected area*/}
                             &nbsp;LNG: {selectedCountry ? '—' : '0.00'}
                         </span>
                         <span className="text-sm text-red-400 font-medium">
-                            {selectedCountry || 'Global View'}
+                            {selectedCountry || ' | Global View'}
                         </span>
                     </div>
                     {/* Three column layout */}

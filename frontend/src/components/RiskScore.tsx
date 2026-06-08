@@ -16,15 +16,15 @@ function RiskScore() {
             <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-4">
                 Global Risk Score
             </h3>
-            <div className="flex items-baseline gap-2 mb-4">
-                <span className={`text-6xl font-bold ${
-                    risk.global_score >= 7 ? 'text-red-400' :   //risk weight identifiers
+            <div className="text-center mb-4">
+                <div className={`text-6xl font-bold ${
+                    risk.global_score >= 7 ? 'text-red-400' :
                     risk.global_score >= 4 ? 'text-yellow-400' :
                     'text-green-400'
                 }`}>
                     {risk.global_score}
-                </span>
-                <span className="text-gray-500 text-lg">/ 10</span>
+                </div>
+                <div className="text-gray-500 text-sm mt-1">out of 10</div>
             </div>
 
         </div>
