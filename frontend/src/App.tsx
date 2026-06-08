@@ -97,20 +97,21 @@ function App() {
                         </div>
 
                         {/* Right — AI Assessment + Threat Scores */}
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-4" >
+                            <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3" style={{ color: '#f0ece4' }}>
+                                AI Assessment
+                            </h3>
                             <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-                                <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3">
-                                    AI Assessment
-                                </h3>
                                 <p className="text-sm text-gray-400">
                                     Claude API integration pending credits.
                                 </p>
                             </div>
                             {/* Threat Scores */}
+                                <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3" style={{ color: '#f0ece4' }}>
+                                    Threat Scores
+                                </h3>
                                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-                                    <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3">
-                                        Threat Scores
-                                    </h3>
+
                                     <div className="flex flex-col gap-3">
                                         {/* Nuclear — DEFCON Rating score */}
                                         <div className="flex justify-between items-center">

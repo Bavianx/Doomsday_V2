@@ -41,7 +41,7 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
         controls.maxDistance = 300
         controls.enablePan = false
         
-        fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+        fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')  // partial solution, will swap this over to cache data sets to limit lag
             .then(res => res.json())
             .then(countries => {
                 globe
@@ -78,7 +78,7 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
                             score >= 6 ? `rgba(249,115,22,${alpha})` :
                             `rgba(234,179,8,${alpha})`
                     })
-                }, 50)
+                }, 100)
             })
         })
     }, []);

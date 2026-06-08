@@ -29,10 +29,10 @@ function ThreatDashboard({ query, selectedCountry }: ThreatDashboardProps) {
 
     return (
     <div className="space-y-3">
+        <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-5" style={{ color: '#f0ece4' }}>
+            {query ? `Results: ${query}` : 'Live Threat Intelligence'}
+        </h3>
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-            <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-5">
-                {query ? `Results: ${query}` : 'Live Threat Intelligence'}
-            </h3>
             <div className="overflow-hidden" style={{ maxHeight: '600px' }}>
                 <div className="auto-scroll">
                     {/* First render */}
