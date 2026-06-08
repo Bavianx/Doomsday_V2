@@ -36,6 +36,10 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
                 .width(globeRef.current!.clientWidth)
                 .height(globeRef.current!.clientHeight)
 
+        const controls = globe.controls()
+        controls.minDistance = 120
+        controls.maxDistance = 300
+        controls.enablePan = false
         
         fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
             .then(res => res.json())
