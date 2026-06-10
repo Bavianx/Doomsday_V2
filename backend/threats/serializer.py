@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import NewsItem, ThreatScore
+from .models import NewsItem, ThreatScore, CountryThreat
 
 #Python file which translates the python data to JSON for the react frontend to uderstand the data being sent
 
@@ -12,3 +12,10 @@ class ThreatScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThreatScore
         fields = ['id', 'category', 'score']
+
+
+
+class CountryThreatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CountryThreat
+        fields = ['name', 'lat', 'lng', 'score']

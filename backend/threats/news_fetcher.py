@@ -1,6 +1,7 @@
 import requests
 from decouple import config
 from .models import NewsItem
+from django.core.management import call_command
 
 THREAT_CATEGORIES = {
     "nuclear": "nuclear weapons OR nuclear missile OR nuclear threat OR radiation leak",
@@ -14,7 +15,7 @@ def fetch_news():
     
     for category, query in THREAT_CATEGORIES.items():
         response = requests.get(
-            f'https://newsapi.org/v2/everything?q=stock+market+trading+financial+news&language=en&pageSize=10&sortBy=publishedAt&apiKey={api_key}'
+            f'https://newsapi.org/v2/everything?q={query}&language=en&pageSize=10&sortBy=publishedAt&apiKey={api_key}'
         )
         articles = response.json().get('articles', [])
         
@@ -27,5 +28,7 @@ def fetch_news():
                     'ai_score': 0
                 }
             )
+    print("News fetched successfully!")        
+    call_command('update_country_scores')
+    print("Country scores updated")
     
-    print("News fetched successfully!")

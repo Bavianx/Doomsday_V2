@@ -3,13 +3,14 @@ from decouple import config
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import NewsItem, ThreatScore
-from .serializer import NewsItemSerializer, ThreatScoreSerializer
+from .models import NewsItem, ThreatScore, CountryThreat
+from .serializer import NewsItemSerializer, ThreatScoreSerializer, CountryThreatSerializer
 from .news_fetcher import fetch_news
 from datetime import timedelta #Part time fix for later implementation of websockets for data 
 from django.utils import timezone #Part time fix for later implementation of websockets for data 
 from django.db.models import Avg
 from .AI_Scorer import score_news_items
+
 
 @api_view(['GET'])
 def health_check(request):
@@ -120,6 +121,12 @@ def threat_data(request):
     return Response({
         'headlines': serializer.data
     })
+
+@api_view(['GET'])
+def country_threat_points(request):
+    countries = CountryThreat.objects.all()
+    serializer = CountryThreatSerializer(countries, many=True)
+    return Response({'countries': serializer.data})
 
 @api_view(['GET'])
 def fetch_news_view(request):

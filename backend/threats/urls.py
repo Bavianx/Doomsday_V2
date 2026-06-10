@@ -10,4 +10,5 @@ urlpatterns = [
     path('risk/', views.global_risk_score, name='global_risk_score'),
     path('score/', views.score_news_view, name='score_news'),
     path('stocknews/', views.stock_news, name='stock_news'),
+    path('countries/', views.country_threat_points, name='country_threat_points'),
 ]
