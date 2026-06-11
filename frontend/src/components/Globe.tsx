@@ -4,6 +4,8 @@ interface GlobeProps {
     onCountryClick?: (country: string) => void
 }
 
+let cachedGeoJson: any = null
+
 function GlobeComponent({ onCountryClick }: GlobeProps) {
     const globeRef = useRef<HTMLDivElement>(null)
     const [threatPoints, setThreatPoints] = useState<any[]>([])
@@ -25,6 +27,14 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
             threatMap[point.name] = point.score
         })
 
+        const loadGeoJson = async () => {
+            if (!cachedGeoJson) {
+                const res = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+                cachedGeoJson = await res.json()
+            }
+            return cachedGeoJson
+        }
+
         import('globe.gl').then(({ default: Globe }) => {
             const globe = new Globe(globeRef.current!)
                 .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
@@ -36,37 +46,47 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
             controls.maxDistance = 300
             controls.enablePan = false
 
-            fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
-                .then(res => res.json())
-                .then(countries => {
-                    globe
-                        .polygonsData(countries.features)
-                        .polygonAltitude(0.01)
-                        .polygonStrokeColor(() => 'rgba(255,255,255,0.03)')
-                        .onPolygonClick((d: any) => {
-                            const name = d.properties.name
-                            if (onCountryClick) onCountryClick(name)
-                        })
+            // Resize handler — only resizes, nothing else
+            const handleResize = () => {
+                if (globeRef.current) {
+                    globe.width(globeRef.current.clientWidth)
+                    globe.height(globeRef.current.clientHeight)
+                }
+            }
+            window.addEventListener('resize', handleResize)
 
-                    let frame = 0
+            // Load GeoJSON — separate from resize
+            loadGeoJson().then(countries => {
+                globe
+                    .polygonsData(countries.features)
+                    .polygonAltitude(0.01)
+                    .polygonStrokeColor(() => 'rgba(255,255,255,0.03)')
+                    .onPolygonClick((d: any) => {
+                        const name = d.properties.name
+                        if (onCountryClick) onCountryClick(name)
+                    })
 
-                    setInterval(() => {
-                        frame += 0.07
+                let frame = 0
 
-                        globe.polygonCapColor((d: any) => {
-                            const name = d.properties.name
-                            const score = threatMap[name]
-                            if (!score) return 'rgba(255,255,255,0.01)'
+                setInterval(() => {
+                    frame += 0.07
 
-                            const wave = (Math.sin(frame + score) + 1) / 2
-                            const alpha = 0.15 + wave * 0.6
+                    globe.polygonCapColor((d: any) => {
+                        const name = d.properties.name
+                        const score = threatMap[name]
+                        if (!score) return 'rgba(255,255,255,0.01)'
 
-                            return score >= 8 ? `rgba(239,68,68,${alpha})` :
-                                   score >= 6 ? `rgba(249,115,22,${alpha})` :
-                                   `rgba(234,179,8,${alpha})`
-                        })
-                    }, 100)
-                })
+                        const wave = (Math.sin(frame + score) + 1) / 2
+                        const alpha = 0.15 + wave * 0.6
+
+                        return score >= 8 ? `rgba(239,68,68,${alpha})` :
+                               score >= 6 ? `rgba(249,115,22,${alpha})` :
+                               `rgba(234,179,8,${alpha})`
+                    })
+                }, 300)
+            })
+
+            return () => window.removeEventListener('resize', handleResize)
         })
     }, [threatPoints])
 
