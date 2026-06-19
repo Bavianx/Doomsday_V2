@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-card: #111827;
+  --bg-hover: #1f2937;
+  --border: #374151;
+  --text-primary: #e8e8e8;
+  --text-secondary: #9ca3af;
+  --text-muted: #4b5563;
+  --accent-gold: #FFD700;
+  --accent-red: #FF3B30;
+  --accent-green: #32D74B;
+}
+
+
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 

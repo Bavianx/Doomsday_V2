@@ -11,10 +11,7 @@ function StockNews() {
 
     return (
         <div className="space-y-2">
-            <h3 className="text-xs font-bold text-gray-400 tracking-widest uppercase px-1" style={{ color: '#f0ece4' }}>
-                World Stock News
-            </h3>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-7">
                 <div className="overflow-hidden max-h-96">
                     <div className="auto-scroll">
                         {/*seamless loop running the articles twice*/}

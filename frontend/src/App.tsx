@@ -38,125 +38,135 @@ function App() {
     }, [view])
 
     return (
-        <div className="relative w-screen h-screen overflow-hidden bg-gray-950">
-
-            {/* Globe layer — always rendered, fades based on view */}
-            <div className={`absolute inset-0 transition-opacity duration-700 ${
-                view === 'globe' ? 'opacity-100' : 'opacity-30'
-            }`}>
-                <GlobeComponent onCountryClick={(country) => { 
-                    setSelectedCountry(country)
+    <div className="relative w-screen h-screen overflow-hidden bg-gray-950">
+        
+        {/* Sticky navbar */}
+        <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-5">
+            <h1 className="text-xl font-bold tracking-widest" style={{ color: '#FFD700' }}>DOOMSDAY</h1>
+            <div className="absolute left-1/2 -translate-x-1/2">
+                <SearchBar onSearch={(query) => {
+                    setSearchQuery(query)
                     setView('dashboard')
                 }} />
             </div>
-
-            {/* Minimal navbar — always visible */}
-            <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4">
-                <h1 className="text-xl font-bold text-red-500 tracking-widest"> DOOMSDAY</h1>
-                <SearchBar onSearch={setSearchQuery} />
-            </div>
-
-            {/* Dashboard layer — slides up on scroll down */}
-            <div className={`absolute inset-0 z-20 transition-all duration-700 ${
-                view === 'dashboard' 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-full pointer-events-none'
-            }`}>
-                <div className="h-full overflow-y-auto bg-gray-950/90 backdrop-blur-sm pt-20 px-6">
-                    {/* Minimal navbar — always visible */}
-                    <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4">
-                        <h1 className="text-xl font-bold text-red-500 tracking-widest"> DOOMSDAY</h1>
-                        <div className="absolute left-1/3 -translate-x-1/2">
-                            <SearchBar onSearch={setSearchQuery} />
-                        </div>
-                    </div>
-
-                    {/* Coordinates bar */}
-                    <div className="mb-4 py-2 px-4 rounded-lg flex items-center gap-6">
-                        <span className="text-xs text-gray-500 uppercase tracking-widest">Location | </span>
-                        <span className="text-sm text-gray-300">
-                            LAT: {selectedCountry ? '—' : '0.00 ,'}   {/*Will implement true to nature geolocation for selected area*/}
-                            &nbsp;LNG: {selectedCountry ? '—' : '0.00'}
-                        </span>
-                        <span className="text-sm text-red-400 font-medium">
-                            {selectedCountry || ' | Global View'}
-                        </span>
-                    </div>
-                    {/* Three column layout */}
-                    <div className="grid grid-cols-3 gap-4">
-                        
-                        {/* Left — Live Threat Feed */}
-                        <div className="flex flex-col gap-4">
-                            <ThreatDashboard query={searchQuery} selectedCountry={selectedCountry} />
-                        </div>
-
-                        {/* Middle — Stock News + Global Risk Score */}
-                        <div className="flex flex-col gap-4">
-                            <StockNews />
-                            <RiskScore />
-                        </div>
-
-                        {/* Right — AI Assessment + Threat Scores */}
-                        <div className="flex flex-col gap-4" >
-                            <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3" style={{ color: '#f0ece4' }}>
-                                AI Assessment
-                            </h3>
-                            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-                                <p className="text-sm text-gray-400">
-                                    Claude API integration pending credits.
-                                </p>
-                            </div>
-                            {/* Threat Scores */}
-                                <h3 className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-3" style={{ color: '#f0ece4' }}>
-                                    Threat Scores
-                                </h3>
-                                <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-
-                                    <div className="flex flex-col gap-3">
-                                        {/* Nuclear — DEFCON Rating score */}
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Nuclear</span>
-                                            <span className="text-sm font-bold text-red-400">
-                                                DEFCON {riskData ? Math.ceil((10 - riskData.categories.nuclear) / 2) : '—'}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Geopolitical</span>
-                                            <span className={`text-sm font-bold ${riskData?.categories.geopolitical >= 7 ? 'text-red-400' : riskData?.categories.geopolitical >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
-                                                {riskData?.categories.geopolitical ?? '—'}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Economic</span>
-                                            <span className={`text-sm font-bold ${riskData?.categories.economic >= 7 ? 'text-red-400' : riskData?.categories.economic >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
-                                                {riskData?.categories.economic ?? '—'}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Cyber</span>
-                                            <span className={`text-sm font-bold ${riskData?.categories.cyber >= 7 ? 'text-red-400' : riskData?.categories.cyber >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
-                                                {riskData?.categories.cyber ?? '—'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            {/* Scroll hint */}
-            {view === 'globe' && (
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-gray-500 text-xs animate-bounce">
-                    scroll down for dashboard
-                </div>
-            )}
-
         </div>
+
+        {/* Globe layer */}
+        <div className={`absolute inset-0 transition-opacity duration-700 ${
+            view === 'globe' ? 'opacity-100' : 'opacity-30'
+        }`}>
+            <GlobeComponent onCountryClick={(country) => {
+                setSelectedCountry(country)
+                setView('dashboard')
+            }} />
+        </div>
+
+        {/* Dashboard layer */}
+        <div className={`absolute inset-0 z-20 transition-all duration-700 ${
+            view === 'dashboard'
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-full pointer-events-none'
+        }`}>
+            <div className="h-full overflow-y-auto pt-32 px-8 pb-6">
+
+                {/* Coordinates bar */}
+                <div className="mb-4 py-2 px-4 rounded-lg flex items-center gap-6">
+                    <span className="text-xs text-gray-500 uppercase tracking-widest">Location |</span>
+                    <span className="text-sm text-gray-300">
+                        LAT: {selectedCountry ? '—' : '0.00 ,'}
+                        &nbsp;LNG: {selectedCountry ? '—' : '0.00'}
+                    </span>
+                    <span className="text-sm text-red-400 font-medium">
+                        {selectedCountry || '| Global View'}
+                    </span>
+                </div>
+
+                {/* Column headers row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-2 py-4">
+                    <h3 className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
+                        {searchQuery ? `Results: ${searchQuery}` : 'Live Threat Intelligence'}
+                    </h3>
+                    <h3 className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
+                        World Stock News
+                    </h3>
+                    <h3 className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
+                        AI Assessment
+                    </h3>
+                </div>
+
+                {/* Three column layout */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-1">
+
+                    {/* Left — Live Threat Feed */}
+                    <div className="flex flex-col gap-4">
+                        <ThreatDashboard query={searchQuery} selectedCountry={selectedCountry} />
+                    </div>
+
+                    {/* Middle — Stock News + Global Risk Score */}
+                    <div className="flex flex-col gap-4">
+                        <StockNews />
+                        <RiskScore />
+                    </div>
+
+                    {/* Right — AI Assessment + Threat Scores */}
+                    <div className="flex flex-col gap-4">
+                        <div className="rounded-xl p-4" style={{
+                            background: 'var(--bg-card)',
+                            border: '1px solid var(--border)',
+                            minHeight: '400px'
+                        }}>
+                            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                                Claude API integration pending credits.
+                            </p>
+                        </div>
+
+                        <h3 className="text-xs font-semibold tracking-widest uppercase mt-8" style={{ color: '#f0ece4' }}>
+                            Threat Scores
+                        </h3>
+                        <div className="rounded-xl p-4" style={{
+                            background: 'var(--bg-card)',
+                            border: '1px solid var(--border)'
+                        }}>
+                            <div className="flex flex-col gap-3">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs text-gray-400 uppercase tracking-widest">Nuclear</span>
+                                    <span className="text-sm font-bold text-red-400">
+                                        DEFCON {riskData ? Math.ceil((10 - riskData.categories.nuclear) / 2) : '—'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs text-gray-400 uppercase tracking-widest">Geopolitical</span>
+                                    <span className={`text-sm font-bold ${riskData?.categories.geopolitical >= 7 ? 'text-red-400' : riskData?.categories.geopolitical >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                        {riskData?.categories.geopolitical ?? '—'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs text-gray-400 uppercase tracking-widest">Economic</span>
+                                    <span className={`text-sm font-bold ${riskData?.categories.economic >= 7 ? 'text-red-400' : riskData?.categories.economic >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                        {riskData?.categories.economic ?? '—'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs text-gray-400 uppercase tracking-widest">Cyber</span>
+                                    <span className={`text-sm font-bold ${riskData?.categories.cyber >= 7 ? 'text-red-400' : riskData?.categories.cyber >= 4 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                        {riskData?.categories.cyber ?? '—'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {/* Scroll hint */}
+        {view === 'globe' && (
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-gray-500 text-xs animate-bounce">
+                scroll down for dashboard
+            </div>
+        )}
+    </div>
     )
 }
-
 export default App
