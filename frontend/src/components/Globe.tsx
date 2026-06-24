@@ -4,18 +4,58 @@ interface GlobeProps {
     onCountryClick?: (country: string) => void
 }
 
+interface Quake {
+    lat: number
+    lng: number
+    magnitude: number
+    place: string
+}
+
 let cachedGeoJson: any = null
 
 function GlobeComponent({ onCountryClick }: GlobeProps) {
     const globeRef = useRef<HTMLDivElement>(null)
     const [threatPoints, setThreatPoints] = useState<any[]>([])
+    const [quakes, setQuakes] = useState<Quake[]>([])
+    const globeInstanceRef = useRef<any>(null)
+
 
     // Fetch threat points from Django
     useEffect(() => {
         fetch('http://127.0.0.1:8000/api/countries/')
             .then(res => res.json())
             .then(data => setThreatPoints(data.countries))
+            
+            
     }, [])
+    
+    // Fetch USGS earthquakes — last 7 days, magnitude 5.5+
+    useEffect(() => {
+        fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=5.5&limit=50&orderby=time')
+            .then(res => res.json())
+            .then(data => {
+                const parsed: Quake[] = data.features.map((f: any) => ({
+                    lat: f.geometry.coordinates[1],
+                    lng: f.geometry.coordinates[0],
+                    magnitude: f.properties.mag,
+                    place: f.properties.place
+                }))
+                setQuakes(parsed)
+            })
+    }, [])
+    useEffect(() => {
+            if (!globeInstanceRef.current || quakes.length === 0) return
+
+            globeInstanceRef.current
+                .ringsData(quakes)
+                .ringLat((d: any) => d.lat)
+                .ringLng((d: any) => d.lng)
+                .ringMaxRadius((d: any) => d.magnitude * .5)
+                .ringPropagationSpeed(1.25)
+                .ringRepeatPeriod(2400)
+                .ringColor(() => (t: number) => `rgba(34,211,238,${1 - t})`)
+                .ringAltitude(0.02)
+        }, [quakes])
 
     // Build globe when threat points are ready
     useEffect(() => {
@@ -40,7 +80,8 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
                 .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
                 .width(globeRef.current!.clientWidth)
                 .height(globeRef.current!.clientHeight)
-
+            
+            globeInstanceRef.current = globe 
             const controls = globe.controls()
             controls.minDistance = 120
             controls.maxDistance = 300
@@ -65,30 +106,42 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
                         const name = d.properties.name
                         if (onCountryClick) onCountryClick(name)
                     })
+                // Catch quakes that loaded before the globe was ready
+                if (quakes.length > 0) {
+                    globe
+                        .ringsData(quakes)
+                        .ringLat((d: any) => d.lat)
+                        .ringLng((d: any) => d.lng)
+                        .ringMaxRadius((d: any) => d.magnitude * 1)
+                        .ringPropagationSpeed(1.5)
+                        .ringRepeatPeriod(2400)
+                        .ringColor(() => (t: number) => `rgba(34,211,238,${1 - t})`)
+                        .ringAltitude(0.02)
+                }
 
-                let frame = 0
+            let frame = 0
 
-                setInterval(() => {
-                    frame += 0.07
+            setInterval(() => {
+                frame += 0.07
 
-                    globe.polygonCapColor((d: any) => {
-                        const name = d.properties.name
-                        const score = threatMap[name]
-                        if (!score) return 'rgba(255,255,255,0.01)'
+                globe.polygonCapColor((d: any) => {
+                    const name = d.properties.name
+                    const score = threatMap[name]
+                    if (!score) return 'rgba(255,255,255,0.01)'
 
-                        const wave = (Math.sin(frame + score) + 1) / 2
-                        const alpha = 0.15 + wave * 0.6
+                    const wave = (Math.sin(frame + score) + 1) / 2
+                    const alpha = 0.15 + wave * 0.6
 
-                        return score >= 8 ? `rgba(239,68,68,${alpha})` :
-                               score >= 6 ? `rgba(249,115,22,${alpha})` :
-                               `rgba(234,179,8,${alpha})`
-                    })
-                }, 300)
-            })
-
-            return () => window.removeEventListener('resize', handleResize)
+                    return score >= 8 ? `rgba(239,68,68,${alpha})` :
+                            score >= 6 ? `rgba(249,115,22,${alpha})` :
+                            `rgba(234,179,8,${alpha})`
+                })
+            }, 300)
         })
-    }, [threatPoints])
+
+        return () => window.removeEventListener('resize', handleResize)
+        })
+    }, [threatPoints, quakes])
 
     return <div ref={globeRef} style={{ width: '100%', height: '100%' }} />
 }
