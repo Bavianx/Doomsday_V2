@@ -1,4 +1,4 @@
-import requests
+import requests, os
 from decouple import config
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -10,6 +10,20 @@ from datetime import timedelta #Part time fix for later implementation of websoc
 from django.utils import timezone #Part time fix for later implementation of websockets for data 
 from django.db.models import Avg
 from .AI_Scorer import score_news_items
+from django.http import HttpResponse
+from django.views.decorators.http import require_GET
+
+@require_GET
+def firms_proxy(request):
+    key = config('FIRMS_KEY')
+    url = f'https://firms.modaps.eosdis.nasa.gov/api/area/csv/{key}/VIIRS_SNPP_NRT/-180,-90,180,90/1'
+    response = requests.get(url)
+    
+    lines = response.text.strip().split('\n')
+    limited = '\n'.join(lines[:201]) 
+    return HttpResponse(limited, content_type='text/plain')
+
+
 
 
 @api_view(['GET'])
@@ -132,3 +146,4 @@ def country_threat_points(request):
 def fetch_news_view(request):
     fetch_news()
     return Response({'status': 'News fetched successfully'})
+

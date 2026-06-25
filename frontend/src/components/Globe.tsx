@@ -4,6 +4,12 @@ interface GlobeProps {
     onCountryClick?: (country: string) => void
 }
 
+interface Fire {
+    lat: number
+    lng: number
+    brightness: number
+}
+
 interface Quake {
     lat: number
     lng: number
@@ -18,6 +24,7 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
     const [threatPoints, setThreatPoints] = useState<any[]>([])
     const [quakes, setQuakes] = useState<Quake[]>([])
     const globeInstanceRef = useRef<any>(null)
+    const [fires, setFires] = useState<Fire[]>([])
 
 
     // Fetch threat points from Django
@@ -56,7 +63,44 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
                 .ringColor(() => (t: number) => `rgba(34,211,238,${1 - t})`)
                 .ringAltitude(0.02)
         }, [quakes])
+    
+    
+    // Fetch NASA FIRMS wildfires
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/api/firms/')
+            .then(res => res.text())
+            .then(csv => {
+                const lines = csv.trim().split('\n')
+                const headers = lines[0].split(',')
+                const latIdx = headers.indexOf('latitude')
+                const lngIdx = headers.indexOf('longitude')
+                const brightIdx = headers.indexOf('bright_ti4')
 
+                const parsed = lines.slice(1).map(line => {
+                    const cols = line.split(',')
+                    return {
+                        lat: parseFloat(cols[latIdx]),
+                        lng: parseFloat(cols[lngIdx]),
+                        brightness: parseFloat(cols[brightIdx])
+                    }
+                }).filter(f => !isNaN(f.lat) && !isNaN(f.lng))
+
+                setFires(parsed)
+            })
+}, [])
+
+    // Update wildfire points when fires load
+    useEffect(() => {
+        if (!globeInstanceRef.current || fires.length === 0) return
+
+        globeInstanceRef.current
+            .pointsData(fires)
+            .pointLat((d: any) => d.lat)
+            .pointLng((d: any) => d.lng)
+            .pointAltitude(0.03)
+            .pointRadius((d: any) => Math.min((d.brightness - 300) / 200, 1.5))
+            .pointColor(() => 'rgba(255,200,50,0.85)')
+    }, [fires])
     // Build globe when threat points are ready
     useEffect(() => {
         if (!globeRef.current || threatPoints.length === 0) return
