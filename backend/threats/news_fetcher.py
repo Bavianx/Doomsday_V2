@@ -25,7 +25,8 @@ def fetch_news():
                 defaults={
                     'source': article.get('source', {}).get('name', ''),
                     'category': category,
-                    'ai_score': 0
+                    'ai_score': 0,
+                    'url': article.get('url', '')
                 }
             )
     print("News fetched successfully!")        

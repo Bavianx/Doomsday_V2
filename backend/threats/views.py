@@ -12,6 +12,7 @@ from django.db.models import Avg
 from .AI_Scorer import score_news_items
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET
+import anthropic
 
 @require_GET
 def firms_proxy(request):
@@ -147,3 +148,35 @@ def fetch_news_view(request):
     fetch_news()
     return Response({'status': 'News fetched successfully'})
 
+@api_view(['GET'])      #Basic assessment 
+def ai_assessment(request):
+    avg_score = NewsItem.objects.exclude(ai_score=0).aggregate(Avg('ai_score'))['ai_score__avg'] or 0
+    
+    if avg_score >= 7:
+        summary = "Elevated global risk detected. Multiple high-severity threats across categories suggest heightened instability."
+    elif avg_score >= 4:
+        summary = "Moderate risk levels observed. Some notable developments warrant monitoring but no immediate escalation."
+    else:
+        summary = "Low overall risk. Current global indicators remain within stable thresholds."
+    
+    return Response({'assessment': summary, 'average_score': round(avg_score, 2)})
+
+@api_view(['GET'])
+def ai_assessment_claude(request):      #Anthropic API assessment
+    client = anthropic.Anthropic(api_key=config('ANTHROPIC_API_KEY'))
+    
+    recent_headlines = NewsItem.objects.order_by('-ai_score')[:5]
+    headlines_text = "\n".join([f"- {item.title} (score: {item.ai_score})" for item in recent_headlines])
+    
+    message = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=150,
+        messages=[
+            {
+                "role": "user",
+                "content": f"Based on these top threat headlines, write a 2-sentence global risk assessment:\n{headlines_text}"
+            }
+        ]
+    )
+    
+    return Response({'assessment': message.content[0].text})

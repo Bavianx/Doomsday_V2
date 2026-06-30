@@ -7,7 +7,9 @@ class NewsItem(models.Model):
     source = models.CharField(max_length=100)
     category = models.CharField(max_length=50)  # nuclear, geopolitical, economic, cyber
     ai_score = models.FloatField(default=0)
+    url = models.URLField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
 
 class ThreatScore(models.Model):
     headline = models.TextField()

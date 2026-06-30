@@ -12,4 +12,6 @@ urlpatterns = [
     path('stocknews/', views.stock_news, name='stock_news'),
     path('countries/', views.country_threat_points, name='country_threat_points'),
     path('firms/', views.firms_proxy, name='firms_proxy'),
+    path('assessment/', views.ai_assessment, name='ai_assessment'),  #remove for the path below if credits are implemented
+    # path('assessment/claude/', views.ai_assessment_claude, name='ai_assessment_claude'),
 ]

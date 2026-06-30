@@ -6,7 +6,7 @@ from .models import NewsItem, ThreatScore, CountryThreat
 class NewsItemSerializer(serializers.ModelSerializer):  #Converting the news fields into json for react to consume 
     class Meta:
         model = NewsItem
-        fields = ['id', 'headline', 'source', 'category', 'ai_score'] #Data set keys for json output within react
+        fields = ['id', 'headline', 'source', 'category', 'ai_score', 'url'] #Data set keys for json output within react
 
 class ThreatScoreSerializer(serializers.ModelSerializer): 
     class Meta:
