@@ -34,31 +34,13 @@ function ThreatDashboard({ query, selectedCountry }: ThreatDashboardProps) {
                 <div className="auto-scroll">
                     {/* First render */}
                     {data.map((item: any, index: number) => (
-                        <div key={index} className="flex items-start justify-between p-4 border-b border-gray-800 hover:bg-gray-800 transition-colors">
-                            <div className="flex items-start gap-3">
-                                <span className={`text-xs px-2 py-1 rounded font-medium flex-shrink-0 ${
-                                    item.category === 'cyber' ? 'bg-red-900 text-red-300' :
-                                    item.category === 'nuclear' ? 'bg-orange-900 text-orange-300' :
-                                    item.category === 'geopolitical' ? 'bg-yellow-900 text-yellow-300' :
-                                    'bg-blue-900 text-blue-300'
-                                }`}>
-                                    {item.category ? item.category.toUpperCase() : 'NEWS'}
-                                </span>
-                                <div>
-                                    <p className="text-sm text-gray-200">{item.headline || item.title}</p>
-                                    <p className="text-xs text-gray-500 mt-1">{item.source}</p>
-                                </div>
-                            </div>
-                            <p className={`text-sm ${
-                                item.ai_score >= 7 ? 'text-red-300 font-semibold' :
-                                item.ai_score >= 4 ? 'text-yellow-200' :
-                                'text-gray-200'
-                            }`}>
-                            </p>
-                        </div>
-                    ))}
-                    {data.map((item: any, index: number) => (
-                        <div key={`dup-${index}`} className="flex items-start justify-between p-4 border-b border-gray-800 hover:bg-gray-800 transition-colors">
+                        <a
+                            key={index}
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-start justify-between p-4 border-b border-gray-800 hover:bg-gray-800 transition-colors cursor-pointer no-underline"
+                        >
                             <div className="flex items-start gap-3">
                                 <span className={`text-xs px-2 py-1 rounded font-medium flex-shrink-0 ${
                                     item.category === 'cyber' ? 'bg-red-900 text-red-300' :
@@ -80,7 +62,39 @@ function ThreatDashboard({ query, selectedCountry }: ThreatDashboardProps) {
                             }`}>
                                 {item.ai_score}
                             </span>
-                        </div>
+                        </a>
+                    ))}
+                    {/* Duplicate render for seamless auto-scroll loop */}
+                    {data.map((item: any, index: number) => (
+                        <a
+                            key={`dup-${index}`}
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-start justify-between p-4 border-b border-gray-800 hover:bg-gray-800 transition-colors cursor-pointer no-underline"
+                        >
+                            <div className="flex items-start gap-3">
+                                <span className={`text-xs px-2 py-1 rounded font-medium flex-shrink-0 ${
+                                    item.category === 'cyber' ? 'bg-red-900 text-red-300' :
+                                    item.category === 'nuclear' ? 'bg-orange-900 text-orange-300' :
+                                    item.category === 'geopolitical' ? 'bg-yellow-900 text-yellow-300' :
+                                    'bg-blue-900 text-blue-300'
+                                }`}>
+                                    {item.category ? item.category.toUpperCase() : 'NEWS'}
+                                </span>
+                                <div>
+                                    <p className="text-sm text-gray-200">{item.headline || item.title}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{item.source}</p>
+                                </div>
+                            </div>
+                            <span className={`text-sm font-bold flex-shrink-0 ml-4 ${
+                                item.ai_score >= 7 ? 'text-red-400' :
+                                item.ai_score >= 4 ? 'text-yellow-400' :
+                                'text-green-400'
+                            }`}>
+                                {item.ai_score}
+                            </span>
+                        </a>
                     ))}
                 </div>
             </div>

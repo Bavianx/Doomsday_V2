@@ -1,23 +1,23 @@
 import React from 'react'
 import { useState } from 'react'
 
-interface SearchBarProps {         //TS blueprint which defines the prop which must take a string as a query and returns nothing
+interface SearchBarProps {
     onSearch: (query: string) => void
 }
 
-function SearchBar({ onSearch }: SearchBarProps) { //take input query and send it over to the function App for json return 
-    const [query, setQuery] = useState('')// user input of data 
+function SearchBar({ onSearch }: SearchBarProps) {
+    const [query, setQuery] = useState('')
 
     return (
         <input
             type="text"
-            value={query}   // value returns the data related to the query
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-                if (e.key === 'Enter') onSearch(query)  // triggers onsearch for the current query alerting the setSearchQuery within the app to update the parents state
+                if (e.key === 'Enter') onSearch(query)
             }}
             placeholder="Search threats..."
-            className="bg-gray-900 border border-gray-700 text-gray-200 text-sm rounded-lg px-4 py-2 w-64 focus:outline-none focus:border-red-500 placeholder-gray-500"
+            className="bg-transparent border-0 border-b border-gray-600 text-gray-200 text-sm px-2 py-2 w-96 focus:outline-none focus:border-red-500 placeholder-gray-500 transition-colors"
         />
     )
 }

@@ -127,9 +127,13 @@ function GlobeComponent({ onCountryClick }: GlobeProps) {
             
             globeInstanceRef.current = globe 
             const controls = globe.controls()
-            controls.minDistance = 120
-            controls.maxDistance = 300
+            const isSmallScreen = window.innerWidth < 900
+            controls.minDistance = isSmallScreen ? 180 : 120
+            controls.maxDistance = isSmallScreen ? 400 : 300
             controls.enablePan = false
+
+            // Also set initial camera position further back on small screens
+            globe.pointOfView({ altitude: isSmallScreen ? 3 : 2.2 })
 
             // Resize handler — only resizes, nothing else
             const handleResize = () => {

@@ -5,6 +5,7 @@ import ThreatDashboard from './components/ThreatDashboard'
 import RiskScore from './components/RiskScore'
 import StockNews from './StockNews'
 import { countryCoords } from './countryCoords'
+import AIAssessment from './components/AIAssessment'
 
 
 function App() {
@@ -57,7 +58,7 @@ function App() {
         {/* Globe layer */}
         <div className={`absolute inset-x-0 top-0 transition-opacity duration-700 flex items-center justify-center ${
             view === 'globe' ? 'opacity-100' : 'opacity-30'
-        } h-[55vh] sm:h-[65vh] md:h-full`}>
+        }`}>
             <GlobeComponent onCountryClick={(country) => {
                 setSelectedCountry(country)
                 setView('dashboard')
@@ -109,15 +110,7 @@ function App() {
                         <h3 className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
                             AI Assessment
                         </h3>
-                        <div className="rounded-xl p-4" style={{
-                            background: 'var(--bg-card)',
-                            border: '1px solid var(--border)',
-                            minHeight: '400px'
-                        }}>
-                            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                                Claude API integration pending credits.
-                            </p>
-                        </div>
+                        <AIAssessment />
 
                         <h3 className="text-xs font-semibold tracking-widest uppercase mt-8" style={{ color: '#f0ece4' }}>
                             Threat Scores
