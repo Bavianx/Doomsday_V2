@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'threats',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -132,4 +134,22 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ]
+}
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+
+
+CELERY_BEAT_SCHEDULE = {
+    'fetch-and-score-every-3-hours': {
+        'task': 'threats.tasks.fetch_and_score',
+        'schedule': crontab(minute=0, hour='*/3'),
+    },
+    'fetch-firms-every-6-hours': {
+        'task': 'threats.tasks.fetch_firms',
+        'schedule': crontab(minute=0, hour='*/6'),
+    },
 }
