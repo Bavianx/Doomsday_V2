@@ -45,14 +45,31 @@ function App() {
     <div className="relative w-screen h-screen overflow-hidden bg-gray-950">
         
         {/* Sticky navbar */}
-        <div className="absolute top-0 left-0 right-0 z-30 flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 py-3 sm:py-5 gap-2 sm:gap-0">
-            <h1 className="text-xl font-bold tracking-widest" style={{ color: '#FFD700' }}>DOOMSDAY</h1>
-            <div className="sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+        <div className="absolute top-0 left-0 right-0 z-50 flex flex-col md:flex-row items-center justify-between px-6 md:px-8 py-4 gap-4">
+            <h1
+                className="cursor-pointer uppercase text-center md:text-left flex-shrink-0"
+                style={{ 
+                    color: '#FFD700',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '1.5rem',
+                    fontWeight: 900,
+                    letterSpacing: '0.5em'
+                }}
+                onClick={() => {
+                    setView('globe')
+                    setSelectedCountry(null)
+                    setSearchQuery('')
+                }}
+            >
+                PANTHEON
+            </h1>
+            <div className="w-2/4 flex justify-center">
                 <SearchBar onSearch={(query) => {
                     setSearchQuery(query)
                     setView('dashboard')
                 }} />
             </div>
+            <div className="w-1/4" />
         </div>
 
         {/* Globe layer */}
