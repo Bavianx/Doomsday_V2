@@ -146,7 +146,7 @@ App runs at `http://localhost:3000`
 
 ## Known Limitations
 
-- **Globe resizing** — Globe.gl's Three.js renderer initialises at a fixed size on first render. Rapidly resizing the browser window can cause the globe canvas to not update correctly. Refreshing the page resolves this. A full fix would require destroying and recreating the globe instance on resize.
+- **Globe resizing** — Globe.gl's Three.js renderer initialises at a fixed size on first render. Globe canvas initialises at the viewport size on first load. Resizing the browser window after load may cause rendering inconsistencies. Refreshing the page resolves this. A full fix would require destroying and recreating the globe instance on resize. 
 - **Wildfire data volume** — NASA FIRMS returns tens of thousands of data points globally. The proxy is limited to 200 rows and filtered to brightness > 350 to maintain performance. Without this filter the globe becomes unresponsive.
 - **Dual navbar** — The navbar is currently shared across the globe and dashboard views. On the dashboard it overlays scrolled content when scrolling. A split navbar architecture is planned as a post-deployment improvement currently affecting the viewing experience of users.
 - **Claude API scoring** — Real Claude API scoring is implemented in `AI_Scorer.py` (`score_news_items_claude()`) but requires a funded Anthropic API key to activate. The mock scorer (`score_news_items()`) is active by default.
