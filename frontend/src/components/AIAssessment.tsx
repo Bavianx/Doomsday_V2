@@ -14,10 +14,9 @@ function AIAssessment() {
     }, [])
 
     return (
-        <div className="rounded-xl p-4" style={{
+        <div className="rounded-xl p-4 flex-1" style={{
             background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            minHeight: '400px'
+            border: '1px solid var(--border)'
         }}>
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {loading ? 'Loading assessment...' : assessment}

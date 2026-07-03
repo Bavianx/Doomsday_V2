@@ -29,7 +29,7 @@ function ThreatDashboard({ query, selectedCountry }: ThreatDashboardProps) {
 
     return (
     <div className="space-y-3">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex-1">
             <div className="overflow-hidden" style={{ maxHeight: '600px' }}>
                 <div className="auto-scroll">
                     {/* First render */}

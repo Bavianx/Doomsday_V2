@@ -11,7 +11,7 @@ function StockNews() {
 
     return (
         <div className="space-y-2">
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-7">
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-7 flex-1">
                 <div className="overflow-hidden max-h-96">
                     <div className="auto-scroll">
                         {/*seamless loop running the articles twice*/}

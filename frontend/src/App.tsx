@@ -45,7 +45,7 @@ function App() {
     <div className="relative w-screen h-screen overflow-hidden bg-gray-950">
         
         {/* Sticky navbar */}
-        <div className="absolute top-0 left-0 right-0 z-50 flex flex-col md:flex-row items-center justify-between px-6 md:px-8 py-4 gap-4">
+        <div className="absolute top-0 left-0 right-0 z-50 flex flex-col md:flex-row items-center justify-between px-6 md:px-8 pt-8 pb-4 gap-4" style={{ background: 'rgba(3,7,18,0.95)' }}>
             <h1
                 className="cursor-pointer uppercase text-center md:text-left flex-shrink-0"
                 style={{ 
@@ -88,7 +88,7 @@ function App() {
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-full pointer-events-none'
         }`}>
-            <div className="h-full overflow-y-auto pt-32 px-8 pb-6">
+            <div className="h-full overflow-y-auto pt-24 px-8 pb-6">
 
                 {/* Coordinates bar */}
                 <div className="mb-4 py-2 px-4 rounded-lg flex items-center gap-6">
@@ -103,19 +103,19 @@ function App() {
                 </div>
 
                 {/* Three column layout */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-1 items-start">
 
                     {/* Left — Live Threat Feed */}
-                    <div className="flex flex-col gap-4">
-                        <h3 className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
+                    <div className="flex flex-col gap-4 h-full">
+                        <h3 className="text-sm font-bold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
                             {searchQuery ? `Results: ${searchQuery}` : 'Live Threat Intelligence'}
                         </h3>
                         <ThreatDashboard query={searchQuery} selectedCountry={selectedCountry} />
                     </div>
 
                     {/* Middle — Stock News + Global Risk Score */}
-                    <div className="flex flex-col gap-4">
-                        <h3 className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
+                    <div className="flex flex-col gap-4 h-full">
+                       <h3 className="text-sm font-bold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
                             World Stock News
                         </h3>
                         <StockNews />
@@ -123,20 +123,21 @@ function App() {
                     </div>
 
                     {/* Right — AI Assessment + Threat Scores */}
-                    <div className="flex flex-col gap-4">
-                        <h3 className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
+                    <div className="md:col-span-2 lg:col-span-1 flex flex-col gap-4 h-full">
+                        <h3 className="text-sm font-bold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
                             AI Assessment
                         </h3>
                         <AIAssessment />
-
-                        <h3 className="text-xs font-semibold tracking-widest uppercase mt-8" style={{ color: '#f0ece4' }}>
-                            Threat Scores
-                        </h3>
+                        <div className="md:col-span-2 lg:col-span-1 flex flex-col gap-4">
+                           <h3 className="text-sm font-bold tracking-widest uppercase" style={{ color: '#f0ece4' }}>
+                                Threat Scores
+                            </h3>
+                        </div>
                         <div className="rounded-xl p-4" style={{
                             background: 'var(--bg-card)',
                             border: '1px solid var(--border)'
                         }}>
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-3 w-full">
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs text-gray-400 uppercase tracking-widest">Nuclear</span>
                                     <span className="text-sm font-bold text-red-400">
