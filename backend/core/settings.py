@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'threats',
     'django_celery_beat',
+    'channels',
 ]
+ASGI_APPLICATION = 'core.asgi.application'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
@@ -136,10 +138,19 @@ REST_FRAMEWORK = {
     ]
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+            "symmetric_encryption_keys": None,
+        },
+    },
+}
+
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-
 
 
 
