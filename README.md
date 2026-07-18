@@ -96,8 +96,7 @@ DATABASE_URL=your_postgres_url
 Run migrations and start the server:
 
 ```bash
-python manage.py migrate
-python manage.py runserver
+daphne -p 8000 core.asgi:application
 ```
 
 ### Celery (Background Tasks)
@@ -163,7 +162,7 @@ App runs at `http://localhost:3000`
 - [x] Real Claude API Scoring — Code complete, pending API credits
 - [x] Celery + Redis — Automated background news fetching every 3 hours
 - [ ] AWS Deployment — Production deployment in progress
-- [ ] WebSockets — Push live updates to React without polling
+- [x] WebSockets — Push live updates to React without polling
 - [ ] GDELT Integration — Global geopolitical event database
 - [ ] Globe Scale Transition — Globe shrinks when dashboard is active
 - [ ] Split Navbar — Separate globe and dashboard navbars
